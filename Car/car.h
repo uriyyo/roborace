@@ -1,8 +1,6 @@
 #ifndef Car_h
 #define Car_h
- 
-#include "WProgram.h"
- 
+
 class Car
 {
     public:
