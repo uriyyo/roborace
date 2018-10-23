@@ -1,21 +1,28 @@
 #ifndef Car_h
 #define Car_h
- 
-//#include "WProgram.h"
- 
+
+#include <Servo.h>
+
+#define MAX_LEFT_ANGLE 60
+#define MAX_RIGHT_ANGLE 120
+
+
+
 class Car
 {
     public:
-        Car(int ForwardPin, int BackwardPin, int RightPin, int LeftPin);
+        Car(){};
+        Car(int ForwardPin, int BackwardPin, int ServoPin);
 
         //milliseconds - in future will be possible to run some command during some specific time
         //when milliseconds time expire - it undo commands 
         //(Forward and Backward go to Stop() ; Left and Right go to CancelTurn())
-        void Forward (int milliseconds = -1);
-        void Backward(int milliseconds = -1);
-        void Left    (int milliseconds = -1);
-        void Right   (int milliseconds = -1);
-
+        void Forward ();
+        void Backward();
+        void Left    ();
+        void Right   ();
+        void DoTurn(int Turn);
+        
         //sets ForwardPin and BackwardPin to LOW
         void Stop();
         //sets LeftPin and RightPin to LOW
@@ -23,12 +30,9 @@ class Car
     private:
         int ForwardPin;
         int BackwardPin;
-        int LeftPin;
-        int RightPin;
+        Servo ServoTurn;
 
         //only this functions sets HIGH value on pins!!!!
-        //For exclusion setting of HIGH on Left and Right pins in the same time
-        void DoTurn(int Turn);
         //For exclusion setting of HIGH on Forward and Backward pins in the same time
         void DoMove(int Move);
 
@@ -37,33 +41,34 @@ class Car
 
 #define FORWARD_MOVE 1
 #define BACKWARD_MOVE 0
-#define LEFT_TURN 1
-#define RIGHT_TURN 0
+#define LEFT_TURN -100
+#define RIGHT_TURN -200
 
-Car::Car(int ForwardPin, int BackwardPin, int RightPin, int LeftPin)
+Car::Car(int ForwardPin, int BackwardPin, int ServoPin)
 {
     this->ForwardPin  = ForwardPin;
     this->BackwardPin = BackwardPin;
-    this->LeftPin     = LeftPin;
-    this->RightPin    = RightPin;
+    this->ServoTurn.attach(ServoPin);
 
     pinMode(ForwardPin , OUTPUT);
     pinMode(BackwardPin, OUTPUT);
-    pinMode(LeftPin    , OUTPUT);
-    pinMode(RightPin   , OUTPUT);
 }
 
 void Car::DoTurn(int Turn)
 {
     if (Turn == LEFT_TURN)
     {
-        digitalWrite(RightPin, LOW);
-        digitalWrite(LeftPin , HIGH);
+        ServoTurn.write(MAX_LEFT_ANGLE);
     }
     else if (Turn == RIGHT_TURN)
     {
-        digitalWrite(LeftPin, LOW);
-        digitalWrite(RightPin , HIGH);
+        ServoTurn.write(MAX_RIGHT_ANGLE);
+    }
+    else if (Turn >=0 && Turn <= 100)
+    {
+        int angle = MAX_LEFT_ANGLE + 
+            (MAX_RIGHT_ANGLE-MAX_LEFT_ANGLE)*Turn / 100;
+        ServoTurn.write(angle);
     }
 }
 
@@ -89,11 +94,10 @@ void Car::Stop()
 
 void Car::CancelTurn()
 {
-    digitalWrite(LeftPin  , LOW);
-    digitalWrite(RightPin , LOW);
+    ServoTurn.write( (MAX_RIGHT_ANGLE-MAX_LEFT_ANGLE) / 2);
 }
 
-void Car::Forward(int milliseconds )
+void Car::Forward()
 {
     DoMove(FORWARD_MOVE);
     /* XXX TODO: add timers
@@ -102,7 +106,7 @@ void Car::Forward(int milliseconds )
     */
 }
 
-void Car::Backward(int milliseconds)
+void Car::Backward()
 {
     DoMove(BACKWARD_MOVE);
     /* XXX TODO: add timers
@@ -111,7 +115,7 @@ void Car::Backward(int milliseconds)
     */
 }
 
-void Car::Left(int milliseconds )
+void Car::Left()
 {
     DoTurn(LEFT_TURN);
     /* XXX TODO: add timers
@@ -120,7 +124,7 @@ void Car::Left(int milliseconds )
     */
 }
 
-void Car::Right(int milliseconds )
+void Car::Right()
 {
     DoTurn(RIGHT_TURN);
     /* XXX TODO: add timers
