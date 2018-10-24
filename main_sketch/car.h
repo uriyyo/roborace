@@ -3,9 +3,9 @@
 
 #include <Servo.h>
 
-#define MAX_LEFT_ANGLE 60
-#define MAX_RIGHT_ANGLE 120
-
+#define MAX_LEFT_ANGLE 80
+#define MAX_RIGHT_ANGLE 180
+#define MIDDLE_ANGLE 127
 
 
 class Car
@@ -94,7 +94,7 @@ void Car::Stop()
 
 void Car::CancelTurn()
 {
-    ServoTurn.write( (MAX_RIGHT_ANGLE-MAX_LEFT_ANGLE) / 2);
+    ServoTurn.write( MIDDLE_ANGLE);
 }
 
 void Car::Forward()
