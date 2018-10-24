@@ -10,6 +10,7 @@ class RangefinderDigital : public Rangefinder {
   private:
     int echoPin;
     int trigPin;
+    int lastPosition;
   public:
     RangefinderDigital(int echoPin, int trigPin);
 
@@ -19,6 +20,7 @@ class RangefinderDigital : public Rangefinder {
 RangefinderDigital::RangefinderDigital(int echoPin, int trigPin) {
   this->echoPin = echoPin;
   this->trigPin = trigPin;
+  this->lastPosition = 0;
 
   pinMode(trigPin, OUTPUT);
   pinMode(echoPin, INPUT);
@@ -36,8 +38,10 @@ long RangefinderDigital::getDistance() {
   // Convert to cm
   long distance = (duration / 2) / 29.1;
 
-  if (distance >= 20 || distance <= 0) {
-    return 20;
+  if (distance >= 200 || distance <= 0) {
+    return lastPosition;
+  }else{
+    lastPosition = distance;
   }
 
   return distance;

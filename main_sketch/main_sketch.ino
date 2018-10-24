@@ -8,7 +8,7 @@
 
 #define FORWARD_SENSOR 19 //A5
 #define RIGHT_SENSOR A4 //A3
-#define LEFT_SENSOR_ECHO 11 
+#define LEFT_SENSOR_ECHO 11
 #define LEFT_SENSOR_TRIGGER 8
 
 
@@ -27,4 +27,5 @@ void setup() {
 
 void loop() {
   contoller->move();
+  delay(100);
 }

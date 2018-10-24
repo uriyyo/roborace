@@ -9,7 +9,6 @@ class Controller {
     Rangefinder *left;
     Rangefinder *right;
     Car* car;
-    // TODO: add pointer on Car instance
   public:
     Controller(Rangefinder *front, Rangefinder *left, Rangefinder *right, Car* car);
 
@@ -29,27 +28,32 @@ void Controller::move() {
   long right_distance = right->getDistance();
   long front_distance = front->getDistance();
 
-  if (front_distance < 10){
-    car->Stop();
-  }else{
-//    car->Forward();
+  // Analyze distance from front rangefinder
+  if (front_distance > 20) {
+    car->Forward();
+  }
+  // Need to slow down before turn
+  else if (front_distance < 20 && front_distance > 5) {
+    car->Forward(200);
+  }
+  // In this case we stand in wall front
+  else {
+    // Move backward for 1 second, than try to move again
+    car->Backward();
+    delay(1000);
+    move();
+    return;
   }
 
-//  if (abs(right_distance - left_distance) < 5) {
-//    car->CancelTurn();
-//  } else if (right_distance > left_distance) {
-//    car->Right();
-//  } else {
-//    car->Left();
-//  }
-  if (left_distance < 20){
+  if (abs(right_distance - left_distance) < 5) {
+    car->CancelTurn();
+  } else if (right_distance > left_distance) {
     car->Right();
-  } else if (left_distance != 20){
-    car->Left();
+    delay(250);
   } else {
-     car->CancelTurn();
+    car->Left();
+    delay(250);
   }
-
 }
 
 #endif
