@@ -17,11 +17,10 @@ class Car
         //milliseconds - in future will be possible to run some command during some specific time
         //when milliseconds time expire - it undo commands 
         //(Forward and Backward go to Stop() ; Left and Right go to CancelTurn())
-        void Forward ();
-        void Backward();
-        void Left    ();
-        void Right   ();
-        void DoTurn(int Turn);
+        void Forward (int speed = -1);
+        void Backward(int speed = -1);
+        void Left    (int percent = -1);
+        void Right   (int percent = -1);
         
         //sets ForwardPin and BackwardPin to LOW
         void Stop();
@@ -34,8 +33,9 @@ class Car
 
         //only this functions sets HIGH value on pins!!!!
         //For exclusion setting of HIGH on Forward and Backward pins in the same time
-        void DoMove(int Move);
+        void DoMove(int Move, int speed = -1);
 
+        void DoTurn(int Turn);
 };
 
 
@@ -64,25 +64,29 @@ void Car::DoTurn(int Turn)
     {
         ServoTurn.write(MAX_RIGHT_ANGLE);
     }
-    else if (Turn >=0 && Turn <= 100)
-    {
-        int angle = MAX_LEFT_ANGLE + 
-            (MAX_RIGHT_ANGLE-MAX_LEFT_ANGLE)*Turn / 100;
-        ServoTurn.write(angle);
+    else if (Turn >=0 && Turn <= 180)
+    {     
+        ServoTurn.write(Turn);
     }
 }
 
-void Car::DoMove(int Move)
+void Car::DoMove(int Move, int speed)
 {
     if (Move == FORWARD_MOVE)
     {
         digitalWrite(BackwardPin, LOW);
-        digitalWrite(ForwardPin , HIGH);
+        if (speed == -1)
+            digitalWrite(ForwardPin , HIGH);
+        else
+            analogWrite(ForwardPin , speed);
     }
     else if (Move == BACKWARD_MOVE)
     {
         digitalWrite(ForwardPin  , LOW);
-        digitalWrite(BackwardPin , HIGH);
+        if (speed == -1)
+            digitalWrite(BackwardPin , HIGH);
+        else
+            analogWrite(BackwardPin , speed);
     }
 }
 
@@ -97,36 +101,52 @@ void Car::CancelTurn()
     ServoTurn.write( MIDDLE_ANGLE);
 }
 
-void Car::Forward()
+void Car::Forward(int speed)
 {
-    DoMove(FORWARD_MOVE);
+    DoMove(FORWARD_MOVE, speed);
     /* XXX TODO: add timers
     if ( milliseconds != -1)
         addTimer(Stop);
     */
 }
 
-void Car::Backward()
+void Car::Backward(int speed)
 {
-    DoMove(BACKWARD_MOVE);
+    DoMove(BACKWARD_MOVE, speed);
     /* XXX TODO: add timers
     if ( milliseconds != -1)
         addTimer(Stop);
     */
 }
 
-void Car::Left()
+void Car::Left(int percent)
 {
-    DoTurn(LEFT_TURN);
+    if (percent == -1)
+    {
+        DoTurn(LEFT_TURN);
+        return;
+    }
+
+    int angle = MAX_LEFT_ANGLE + 
+        (MIDDLE_ANGLE-MAX_LEFT_ANGLE)*percent / 100;
+    DoTurn(angle);
     /* XXX TODO: add timers
     if ( milliseconds != -1)
         addTimer(CancelTurn);
     */
 }
 
-void Car::Right()
+void Car::Right(int percent)
 {
-    DoTurn(RIGHT_TURN);
+    if (percent == -1)
+    {
+        DoTurn(RIGHT_TURN);
+        return;
+    }
+
+    int angle = MIDDLE_ANGLE + 
+        (MAX_RIGHT_ANGLE-MIDDLE_ANGLE)*percent / 100;
+    DoTurn(angle);
     /* XXX TODO: add timers
     if ( milliseconds != -1)
         addTimer(CancelTurn);
