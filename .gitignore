@@ -1,3 +1,6 @@
+# CLion files
+.idea
+
 # Prerequisites
 *.d
 
