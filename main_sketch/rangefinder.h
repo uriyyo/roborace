@@ -43,10 +43,6 @@ long RangefinderDigital::getDistance() {
   }else{
     lastPosition = distance;
   }
-
-  if (distance > 20){
-    return 20;
-  }
   
   return distance;
 }
