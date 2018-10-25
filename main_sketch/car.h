@@ -49,6 +49,7 @@ Car::Car(int ForwardPin, int BackwardPin, int ServoPin, int SpeedPin)
 {
     this->ForwardPin  = ForwardPin;
     this->BackwardPin = BackwardPin;
+    this->SpeedPin = SpeedPin;
     this->ServoTurn.attach(ServoPin);
 
     pinMode(SpeedPin, OUTPUT);
