@@ -4,6 +4,7 @@
 
 #define FORWARD_PIN 2
 #define BACKWARD_PIN 4
+#define SPEED_PIN 5
 #define SERVO_PIN 3
 
 #define FORWARD_SENSOR 19 //A5
@@ -19,7 +20,7 @@ RangefinderDigital left(11, 12);
 RangefinderDigital right(6, 7);
 
 void setup() {
-  Car car (FORWARD_PIN, BACKWARD_PIN, SERVO_PIN);
+  Car car (FORWARD_PIN, BACKWARD_PIN, SERVO_PIN, SPEED_PIN);
   car.CancelTurn();
 
   contoller = new Controller(new RangefinderDigital(9, 8),

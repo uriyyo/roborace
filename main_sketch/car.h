@@ -12,7 +12,7 @@ class Car
 {
     public:
         Car(){};
-        Car(int ForwardPin, int BackwardPin, int ServoPin);
+        Car(int ForwardPin, int BackwardPin, int ServoPin, int SpeedPin);
 
         //milliseconds - in future will be possible to run some command during some specific time
         //when milliseconds time expire - it undo commands 
@@ -29,6 +29,7 @@ class Car
     private:
         int ForwardPin;
         int BackwardPin;
+        int SpeedPin;
         Servo ServoTurn;
 
         //only this functions sets HIGH value on pins!!!!
@@ -44,18 +45,15 @@ class Car
 #define LEFT_TURN_CAR_H -100
 #define RIGHT_TURN_CAR_H -200
 
-Car::Car(int ForwardPin, int BackwardPin, int ServoPin)
+Car::Car(int ForwardPin, int BackwardPin, int ServoPin, int SpeedPin)
 {
     this->ForwardPin  = ForwardPin;
     this->BackwardPin = BackwardPin;
     this->ServoTurn.attach(ServoPin);
 
-    pinMode(5, OUTPUT);
+    pinMode(SpeedPin, OUTPUT);
     pinMode(ForwardPin , OUTPUT);
     pinMode(BackwardPin, OUTPUT);
-
-    
-  digitalWrite(5,HIGH);
 }
 
 void Car::DoTurn(int Turn)
@@ -79,25 +77,23 @@ void Car::DoMove(int Move, int speed)
     if (Move == FORWARD_MOVE)
     {
         digitalWrite(BackwardPin, LOW);
-        if (speed == -1)
-            digitalWrite(ForwardPin , HIGH);
-        else
-            analogWrite(ForwardPin , speed);
+        digitalWrite(ForwardPin , HIGH);
     }
     else if (Move == BACKWARD_MOVE)
     {
         digitalWrite(ForwardPin  , LOW);
-        if (speed == -1)
-            digitalWrite(BackwardPin , HIGH);
-        else
-            analogWrite(BackwardPin , speed);
+        digitalWrite(BackwardPin , HIGH);
     }
+
+    if (speed == -1)
+        digitalWrite(SpeedPin , HIGH);
+    else
+        analogWrite(SpeedPin , speed);
 }
 
 void Car::Stop()
 {
-    digitalWrite(BackwardPin, LOW);
-    digitalWrite(ForwardPin , LOW);
+    digitalWrite(SpeedPin, LOW);
 }
 
 void Car::CancelTurn()
