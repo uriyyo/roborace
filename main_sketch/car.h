@@ -41,8 +41,8 @@ class Car
 
 #define FORWARD_MOVE 1
 #define BACKWARD_MOVE 0
-#define LEFT_TURN -100
-#define RIGHT_TURN -200
+#define LEFT_TURN_CAR_H -100
+#define RIGHT_TURN_CAR_H -200
 
 Car::Car(int ForwardPin, int BackwardPin, int ServoPin)
 {
@@ -50,17 +50,21 @@ Car::Car(int ForwardPin, int BackwardPin, int ServoPin)
     this->BackwardPin = BackwardPin;
     this->ServoTurn.attach(ServoPin);
 
+    pinMode(5, OUTPUT);
     pinMode(ForwardPin , OUTPUT);
     pinMode(BackwardPin, OUTPUT);
+
+    
+  digitalWrite(5,HIGH);
 }
 
 void Car::DoTurn(int Turn)
 {
-    if (Turn == LEFT_TURN)
+    if (Turn == LEFT_TURN_CAR_H)
     {
         ServoTurn.write(MAX_LEFT_ANGLE);
     }
-    else if (Turn == RIGHT_TURN)
+    else if (Turn == RIGHT_TURN_CAR_H)
     {
         ServoTurn.write(MAX_RIGHT_ANGLE);
     }
@@ -123,7 +127,7 @@ void Car::Left(int percent)
 {
     if (percent == -1)
     {
-        DoTurn(LEFT_TURN);
+        DoTurn(LEFT_TURN_CAR_H);
         return;
     }
 
@@ -140,7 +144,7 @@ void Car::Right(int percent)
 {
     if (percent == -1)
     {
-        DoTurn(RIGHT_TURN);
+        DoTurn(RIGHT_TURN_CAR_H);
         return;
     }
 
