@@ -38,32 +38,13 @@ long RangefinderDigital::getDistance() {
   // Convert to cm
   long distance = (duration / 2) / 29.1;
 
-  if (distance >= 200 || distance <= 0) {
-    distance = lastPosition;
-  }else{
-    lastPosition = distance;
-  }
+//  if (distance >= 200 || distance <= 0) {
+//    distance = lastPosition;
+//  }else{
+//    lastPosition = distance;
+//  }
   
   return distance;
-}
-
-class RangefinderAnalog : public Rangefinder {
-  private:
-    int pin;
-  public:
-    RangefinderAnalog(int pin);
-
-    virtual long getDistance();
-};
-
-RangefinderAnalog::RangefinderAnalog(int pin) {
-  this->pin = pin;
-}
-
-long RangefinderAnalog::getDistance() {
-  float volts = analogRead(pin) * 0.0048828125;
-  long distance = 13 * pow(volts, -1);
-  return distance > 20 || distance < 0 ? 20 : distance;
 }
 
 #endif
