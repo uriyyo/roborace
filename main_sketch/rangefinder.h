@@ -2,49 +2,38 @@
 #define Rangefinder_h
 
 class Rangefinder {
-  public:
+public:
     virtual long getDistance() = 0;
 };
 
 class RangefinderDigital : public Rangefinder {
-  private:
+private:
     int echoPin;
     int trigPin;
-    int lastPosition;
-  public:
+public:
     RangefinderDigital(int echoPin, int trigPin);
 
     virtual long getDistance();
 };
 
 RangefinderDigital::RangefinderDigital(int echoPin, int trigPin) {
-  this->echoPin = echoPin;
-  this->trigPin = trigPin;
-  this->lastPosition = 0;
+    this->echoPin = echoPin;
+    this->trigPin = trigPin;
 
-  pinMode(trigPin, OUTPUT);
-  pinMode(echoPin, INPUT);
+    pinMode(trigPin, OUTPUT);
+    pinMode(echoPin, INPUT);
 }
 
 long RangefinderDigital::getDistance() {
 
-  digitalWrite(trigPin, LOW);
-  delayMicroseconds(5);
-  digitalWrite(trigPin, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(trigPin, LOW);
+    digitalWrite(trigPin, LOW);
+    delayMicroseconds(5);
+    digitalWrite(trigPin, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(trigPin, LOW);
 
-  long duration = pulseIn(echoPin, HIGH);
-  // Convert to cm
-  long distance = (duration / 2) / 29.1;
-
-//  if (distance >= 200 || distance <= 0) {
-//    distance = lastPosition;
-//  }else{
-//    lastPosition = distance;
-//  }
-  
-  return distance;
+    long duration = pulseIn(echoPin, HIGH);
+    return duration / 58.2;
 }
 
 #endif

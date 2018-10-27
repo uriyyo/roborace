@@ -5,7 +5,7 @@
 
 #define MAX_LEFT_ANGLE 80
 #define MAX_RIGHT_ANGLE 180
-#define MIDDLE_ANGLE 127
+#define MIDDLE_ANGLE 125
 
 
 class Car

@@ -14,27 +14,26 @@
 
 #define BUTTON_PIN 13
 
-#define DEBUG
-
 #ifdef DEBUG
 RangefinderDigital front(9, 8);
 RangefinderDigital left(11, 12);
 RangefinderDigital right(6, 7);
 #endif
 
-Controller controller(
-        new RangefinderDigital(9, 8),
-        new RangefinderDigital(11, 12),
-        new RangefinderDigital(6, 7),
-        new Car(FORWARD_PIN, BACKWARD_PIN, SERVO_PIN, SPEED_PIN)
-);
-
+Controller *controller;
 
 bool isWorking = false;
 
 void setup() {
+    Car car(FORWARD_PIN, BACKWARD_PIN, SERVO_PIN, SPEED_PIN);
+
+    controller = new Controller(new RangefinderDigital(9, 8),
+                                new RangefinderDigital(11, 12),
+                                new RangefinderDigital(6, 7),
+                                &car);
+
+    car.CancelTurn();
     pinMode(BUTTON_PIN, INPUT_PULLUP);
-    controller.stop();
 
 #ifdef DEBUG
     Serial.begin(9600);
@@ -49,19 +48,12 @@ void loop() {
     }
 
     if (isWorking) {
-        controller.move();
+        controller->move();
     } else {
-        controller.stop();
+        controller->stop();
     }
-
-
+    
 #ifdef DEBUG
-    Serial.print("Left: \t");
-    Serial.print(left.getDistance());
-    Serial.print("\tRight: \t");
-    Serial.print(right.getDistance());
-    Serial.print("\tFront: \t");
-    Serial.print(front.getDistance());
-    Serial.println();
+    controller->logStates();
 #endif
 }
