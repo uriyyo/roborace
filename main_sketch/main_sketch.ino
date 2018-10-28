@@ -14,11 +14,6 @@
 
 #define BUTTON_PIN 13
 
-#ifdef DEBUG
-RangefinderDigital front(9, 8);
-RangefinderDigital left(11, 12);
-RangefinderDigital right(6, 7);
-#endif
 
 Controller *controller;
 
